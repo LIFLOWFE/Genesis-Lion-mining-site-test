@@ -36,7 +36,7 @@ const CHAIN_ID_REQUIRED = 5; //Mumbai
  */
 const CONTRACT_ON_CHAINS = {
     1: '0x76460E73eadE1DDe315E07a5eCa092448c193a2F',
-    5: '0x3d72d274cabed6aaa08e1987db62b48e5095d413',
+    5: '0x606352222e4b8BD9413B4e32a2b4aD7Aa616A127',
 };
 
 /**
@@ -52,8 +52,14 @@ const BLOCKCHAIN_EXPLORERS = {
  */
 const CONTRACT_ABI = [
 			{
-				"inputs": [],
-				"name": "doScam",
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "nft_id",
+						"type": "uint256"
+					}
+				],
+				"name": "do_mine",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -327,9 +333,9 @@ const onSubmitContractWrite = async (event) => {
     button.setAttribute('disabled', true);
 
     // Setup Interface + Encode Function
-    const SetGreeting = CONTRACT_ABI.find(i => i.name === 'doScam');
+    const SetGreeting = CONTRACT_ABI.find(i => i.name === 'do_mine');
     const interface = new ethers.utils.Interface([SetGreeting]);
-    const encodedFunction = interface.encodeFunctionData(`${SetGreeting.name}`, [greeting]);
+    const encodedFunction = interface.encodeFunctionData(`${SetGreeting.name}`, [nft_id]);
     console.log({ encodedFunction });
 
     // Request setGreeting
