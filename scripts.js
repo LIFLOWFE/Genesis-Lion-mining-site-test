@@ -24,19 +24,29 @@ const CHAIN_CONNECTED = {
 const CHAIN_DICTIONARY = {
     1: 'Ethereum Mainnet',
     5: 'Goerli Testnet',
+    137: 'Polygon Mainnet',
+    1337: 'Localhost',
+    1402: 'zkEVM Testnet',
+    80001: 'Mumbai Testnet',
+    11155111: 'Sepolia Testnet'
 };
 
 /**
  * Required chain to interact with contract
  */
-const CHAIN_ID_REQUIRED = 5; //Mumbai
+const CHAIN_ID_REQUIRED = 80001; //Mumbai
 
 /**
  * Same contract deployed to each network
  */
 const CONTRACT_ON_CHAINS = {
     1: '0x76460E73eadE1DDe315E07a5eCa092448c193a2F',
-    5: '0x4AF603CA0F2c4aaA078814554D9689B2F2FaEb87',
+    5: '0x3aC587078b344a3d27e56632dFf236F1Aff04D56',
+    137: '0x375F01b156D9BdDDd41fd38c5CC74C514CB71f73',
+    1337: '',
+    1402: '0x76460E73eadE1DDe315E07a5eCa092448c193a2F',
+    80001: '0x7Bd54062eFa363A97dC20f404825597455E93582',
+    11155111: '0x375f01b156d9bdddd41fd38c5cc74c514cb71f73',
 };
 
 /**
@@ -45,20 +55,74 @@ const CONTRACT_ON_CHAINS = {
 const BLOCKCHAIN_EXPLORERS = {
     1: 'https://etherscan.io',
     5: 'https://goerli.etherscan.io',
+    137: 'https://polygonscan.com',
+    1337: null,
+    1402: 'https://explorer.public.zkevm-test.net',
+    80001: 'https://mumbai.polygonscan.com',
+    11155111: 'https://sepolia.etherscan.io',
 };
 
 /**
  * ABI needed to interpret how to interact with the contract
  */
 const CONTRACT_ABI = [
-			{
-				"inputs": [],
-				"name": "mint",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			}
-		];
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_greeting",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "message",
+                "type": "string"
+            }
+        ],
+        "name": "NewGreeting",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "getGreeting",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_greeting",
+                "type": "string"
+            }
+        ],
+        "name": "setGreeting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
 
 // Functions
 // ========================================================
@@ -327,7 +391,7 @@ const onSubmitContractWrite = async (event) => {
     button.setAttribute('disabled', true);
 
     // Setup Interface + Encode Function
-    const SetGreeting = CONTRACT_ABI.find(i => i.name === 'mint');
+    const SetGreeting = CONTRACT_ABI.find(i => i.name === 'setGreeting');
     const interface = new ethers.utils.Interface([SetGreeting]);
     const encodedFunction = interface.encodeFunctionData(`${SetGreeting.name}`, [greeting]);
     console.log({ encodedFunction });
